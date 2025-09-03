@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:taskaty/core/services/hive.dart';
 
 import 'package:taskaty/features/addtask/addtask.dart';
 import 'package:taskaty/features/addtask/widgets.dart';
+import 'package:taskaty/features/home/homescreen.dart';
 
 class Firstscreen extends StatefulWidget {
   const Firstscreen({super.key});
@@ -27,7 +29,7 @@ class _FirstscreenState extends State<Firstscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -39,7 +41,7 @@ class _FirstscreenState extends State<Firstscreen> {
                   : AssetImage("assets/images/user 1.png"),
               radius: 60,
             ),
-            Gap(20),
+            const Gap(20),
             Mainbuttom(
               title: "import from camera",
               ontap: () async {
@@ -51,7 +53,7 @@ class _FirstscreenState extends State<Firstscreen> {
                 }
               },
             ),
-            Gap(20),
+            const Gap(20),
             Mainbuttom(
               title: "import from gallery",
               ontap: () async {
@@ -63,11 +65,11 @@ class _FirstscreenState extends State<Firstscreen> {
                 }
               },
             ),
-            Gap(20),
-            Divider(),
-            Gap(20),
+            const Gap(20),
+            const Divider(),
+            const Gap(20),
             textform(title: "Enter your name ", controllor: namecontrollor),
-            Gap(20),
+            const Gap(20),
             Mainbuttom(
               title: "Done",
               ontap: () {
@@ -81,9 +83,10 @@ class _FirstscreenState extends State<Firstscreen> {
                 } else if (path.isEmpty && namecontrollor.text.isNotEmpty) {
                   snackbar("please put your image", context);
                 } else if (path.isNotEmpty && namecontrollor.text.isNotEmpty) {
+                  HiveDate.putcompleteuserdata(namecontrollor.text, path);
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => Addtask()),
+                    MaterialPageRoute(builder: (context) => Homescreen()),
                   );
                 }
               },

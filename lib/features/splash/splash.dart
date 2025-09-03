@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:taskaty/core/services/hive.dart';
 
 import 'package:taskaty/features/firstscreen/firstscreen.dart';
+import 'package:taskaty/features/home/homescreen.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -17,7 +19,10 @@ class _SplashState extends State<Splash> {
     Future.delayed(Duration(seconds: 6), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Firstscreen()),
+        MaterialPageRoute(
+          builder: (context) =>
+              HiveDate().kisuploaded == true ? Homescreen() : Firstscreen(),
+        ),
       );
     });
   }

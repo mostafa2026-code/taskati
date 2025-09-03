@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:taskaty/core/colors/colors.dart';
 
+// ignore: camel_case_types
 class textform extends StatelessWidget {
   final String title;
   final int? maxline;
   final Widget? suffix;
   final TextEditingController? controllor;
+  final bool? readonly;
+  final Function()? ontap;
   const textform({
     super.key,
     required this.title,
     this.maxline,
     this.suffix,
     this.controllor,
+    this.readonly,
+    this.ontap,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: ontap,
+      readOnly: readonly ?? false,
       controller: controllor,
-      minLines: 1,
+    
       maxLines: maxline,
       decoration: InputDecoration(hintText: title, suffixIcon: suffix),
     );
@@ -29,6 +35,7 @@ class textform extends StatelessWidget {
 class Hour extends StatefulWidget {
   final String type;
   final TextEditingController controller;
+
   const Hour({super.key, required this.type, required this.controller});
 
   @override
@@ -43,6 +50,16 @@ class _HourState extends State<Hour> {
       children: [
         Tasktext(widget.type).medboldblack(),
         textform(
+          readonly: true,
+          ontap: () async {
+            var selectedtime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            );
+            if (selectedtime != null) {
+              widget.controller.text =  selectedtime.format(context);
+            }
+          },
           controllor: widget.controller,
           title: "${widget.type} hour",
           suffix: IconButton(
@@ -62,20 +79,18 @@ class _HourState extends State<Hour> {
   }
 }
 
-
-
-
 class Mainbuttom extends StatelessWidget {
   final String title;
   final Function() ontap;
-  const Mainbuttom({super.key, required this.title, required this.ontap});
+  final double? width;
+  const Mainbuttom({super.key, required this.title, required this.ontap, this.width});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: TaColors().blue,
-        minimumSize: Size(double.infinity, 50),
+        minimumSize: Size(width?? double.infinity, 50),
       ),
       onPressed: ontap,
       child: Tasktext(title).mednormalwhite(),
@@ -94,4 +109,3 @@ ScaffoldFeatureController snackbar(message, page) {
     ),
   );
 }
-

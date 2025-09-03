@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:taskaty/core/colors/colors.dart';
 import 'package:taskaty/features/addtask/widgets.dart';
+import 'package:intl/intl.dart';
 
 class Addtask extends StatefulWidget {
   const Addtask({super.key});
@@ -12,28 +13,38 @@ class Addtask extends StatefulWidget {
 
 class _AddtaskState extends State<Addtask> {
   late final String title;
-  final TextEditingController titlecon = TextEditingController();
+  TextEditingController titlecon = TextEditingController();
 
   late final String description;
-  final TextEditingController descriptioncon = TextEditingController();
+  TextEditingController descriptioncon = TextEditingController();
 
   late final String date;
-  final TextEditingController datecon = TextEditingController();
+  TextEditingController datecon = TextEditingController(
+    text: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+  );
 
   late final String start;
-  final TextEditingController startcon = TextEditingController();
+  TextEditingController startcon = TextEditingController(
+    text: DateFormat("hh:mm a").format(DateTime.now()),
+  );
 
   late final String end;
-  final TextEditingController endcon = TextEditingController();
+  TextEditingController endcon = TextEditingController(
+    text: DateFormat("hh:mm a").format(DateTime.now()),
+  );
+
+  List<Color> colors = [
+    TaColors().red,
+    TaColors().blue,
+    TaColors().orange,
+    TaColors().grey,
+  ];
+  int? currentindex;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
-        title: Tasktext("Addtask").headine(),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Tasktext("Addtask").headine(), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -41,27 +52,39 @@ class _AddtaskState extends State<Addtask> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Gap(10),
+              const Gap(10),
               Tasktext("Title").medboldblack(),
               textform(title: "Enter title", controllor: titlecon),
-              Gap(20),
+              const Gap(20),
               Tasktext("Description").medboldblack(),
               textform(
                 title: "Enter description",
-                maxline: 5,
+                maxline: 3,
                 controllor: descriptioncon,
               ),
-              Gap(20),
+              const Gap(20),
               Tasktext("Date").medboldblack(),
               textform(
+                readonly: true,
+                ontap: () async {
+                  dynamic selecteddate = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2070),
+                    initialDate: DateTime.now()
+                  );
+                  if (selecteddate != null) {
+                    selecteddate = DateFormat(
+                      "yyyy-MM-dd",
+                    ).format(selecteddate);
+                    datecon.text = selecteddate;
+                  }
+                },
                 title: "Enter date",
-                suffix: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.date_range),
-                ),
+                suffix: Icon(Icons.date_range),
                 controllor: datecon,
               ),
-              Gap(20),
+              const Gap(20),
               Row(
                 children: [
                   Expanded(
@@ -75,15 +98,30 @@ class _AddtaskState extends State<Addtask> {
               ),
               Tasktext("Color").medboldblack(),
               Row(
-                children: [
-                  Colorcontainer(color: TaColors().blue),
-                  Gap(5),
-                  Colorcontainer(color: TaColors().orange),
-                  Gap(5),
-                  Colorcontainer(color: TaColors().red),
-                ],
+                children: List.generate(3, (index) {
+                  return Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            currentindex = index;
+                          });
+                        },
+
+                        child: CircleAvatar(
+                          backgroundColor: colors[index],
+                          child: currentindex == index
+                              ? Icon(Icons.check, color: TaColors().white)
+                              : null,
+                          radius: currentindex == index ? 30 : 20,
+                        ),
+                      ),
+                      const Gap(5),
+                    ],
+                  );
+                }),
               ),
-              Gap(20),
+              const Gap(20),
               Mainbuttom(
                 title: "Add task",
                 ontap: () {
@@ -94,40 +132,11 @@ class _AddtaskState extends State<Addtask> {
                   end = endcon.text;
                 },
               ),
+
+              SafeArea(child: Gap(100)),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class Colorcontainer extends StatefulWidget {
-  final Color color;
-  bool clicked = false;
-  Colorcontainer({super.key, required this.color});
-
-  @override
-  State<Colorcontainer> createState() => _ColorcontainerState();
-}
-
-class _ColorcontainerState extends State<Colorcontainer> {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          widget.clicked = true;
-        });
-      },
-      child: Container(
-        height: widget.clicked ? 50 : 40,
-        width: widget.clicked ? 50 : 40,
-        decoration: BoxDecoration(
-          color: widget.color,
-          borderRadius: BorderRadius.circular(widget.clicked ? 25 : 20),
-        ),
-        child: widget.clicked ? Icon(Icons.check) : null,
       ),
     );
   }
