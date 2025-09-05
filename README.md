@@ -152,9 +152,40 @@ separation of concerns, which prevents its implementation from juggling too many
 
 
 
-دا مثال على الtypeadaptor      والنظري هرفع في صورة 
+# The adapter in Flutter  
+## Topic: search  
+
+الشرح  
+الـ adapter هو كلاس بيعمل mapping ما بين الـ Custom DataType اللي انت عملته في Hive & Hive بيشتغل بس على Primitive DataType  
+
+بشكل عادي لازم نعرّف الـ type adapter علشان يحوّل الـ object اللي هو Not Primitive DataType اللي انت عملته في Hive علشان الـ Local Database الـ ass  
+
+طب ازاي نعمل الـ adapter  
+بنعمل كلاس جديد ونسميه userTypeAdapter ونعمل extends لـ TypeAdapter ونعمل override للـ methods اللي لازم تدخل الـ data فيها  
+اللي هما read / get typeId / write  
+
+---
+
+### read()  
+خاصية read بترجع الكلاس اللي انت عامله  
+يعني مثلاً الكلاس اسمه userModel والكلاس فيه attributes ( userKey & userName )  
+فنكتب:  
+```dart
+UserModel(
+  userName: reader.readString(),
+  userKey: reader.readInt(),
+)
+ 
 
 
+
+
+
+
+
+
+
+ودا المثال اللي طبقت عليه في المشروع اللي شغالين عليه 
 
 
 import 'package:flutter/material.dart';
