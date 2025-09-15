@@ -31,9 +31,9 @@ class HiveDate {
     adddatetouserbox(HiveDate().kisuploaded, true);
   }
 
-  static setuserdata(String new_name, String new_image) {
-    userbox.put(HiveDate().kName, new_name);
-    userbox.put(HiveDate().kimage, new_image);
+  static setuserdata(String newName, String newImage) {
+    userbox.put(HiveDate().kName, newName);
+    userbox.put(HiveDate().kimage, newImage);
   }
 
   static puttaskdata(key, value) {

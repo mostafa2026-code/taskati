@@ -149,8 +149,11 @@ class _AddtaskState extends State<Addtask> {
                           title: titlecon.text,
                           description: descriptioncon.text,
                           date: DateTime.parse(datecon.text),
-                          start: DateTime.parse(startcon.text),
+                          start: DateTime.parse(datecon.text),
                           end: DateTime.parse(startcon.text),
+                          id: id,
+                          
+                        
                         ),
                       );
                       await Navigator.pushAndRemoveUntil(

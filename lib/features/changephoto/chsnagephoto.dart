@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:hive_flutter/adapters.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:taskaty/core/colors/colors.dart';
 import 'package:taskaty/core/services/hive.dart';
@@ -37,8 +37,10 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
         ),
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.sunny))],
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(24),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
               onTap: () {
@@ -60,6 +62,8 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
                                 );
                               }
                             });
+                            // ignore: use_build_context_synchronously
+                            Navigator.pop(context);
                           },
                           child: Text("Upload From Camera"),
                         ),
@@ -75,6 +79,7 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
                                   image!.path,
                                 );
                               }
+                              Navigator.pop(context);
                             });
                           },
                           child: Text("Upload From Gallary"),
@@ -89,6 +94,7 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
                 backgroundImage: HiveDate.getuserdate(HiveDate().kimage) != null
                     ? FileImage(File(HiveDate.getuserdate(HiveDate().kimage)))
                     : AssetImage("assets/images/user 1.png"),
+                radius: 50,
                 child: Icon(Icons.camera_alt_outlined),
               ),
             ),
@@ -107,10 +113,30 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
                       builder: (context) {
                         return AlertDialog.adaptive(
                           actions: [
-                            TextButton(onPressed: () {}, child: Text("Cancel")),
-                            TextButton(onPressed: () {}, child: Text("Ok")),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  HiveDate.userbox.put(
+                                    HiveDate().kName,
+                                    namecon2.text,
+                                  );
+                                });
+
+                                Navigator.pop(context);
+                              },
+                              child: Text("Ok"),
+                            ),
                           ],
-                          content: textform(title: namecon2.text),
+                          content: textform(
+                            title: namecon2.text,
+                            controllor: namecon2,
+                          ),
                         );
                       },
                     );

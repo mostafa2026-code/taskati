@@ -19,32 +19,35 @@ class TsskModelAdapter extends TypeAdapter<TsskModel> {
     return TsskModel(
       id: fields[0] as String,
       title: fields[1] as String,
-      description: fields[3] as String,
-      taskdate: fields[4] as String,
-      start: fields[5] as String,
-      end: fields[6] as String,
-      completed: fields[7] as bool,
+      description: fields[2] as String,
+      taskdate: fields[3] as String,
+      start: fields[4] as String,
+      end: fields[5] as String,
+      completed: fields[6] as bool,
+      colorindex: fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, TsskModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.title)
-      ..writeByte(3)
+      ..writeByte(2)
       ..write(obj.description)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.taskdate)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.start)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.end)
+      ..writeByte(6)
+      ..write(obj.completed)
       ..writeByte(7)
-      ..write(obj.completed);
+      ..write(obj.colorindex);
   }
 
   @override

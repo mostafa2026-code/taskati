@@ -18,8 +18,6 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  get index => null;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,10 +89,8 @@ class _HomescreenState extends State<Homescreen> {
             ),
             ValueListenableBuilder(
               valueListenable: HiveDate.taskbox.listenable(),
-
-              builder: (BuildContext context, dynamic box, Widget? child) {
-                List tasks = box.values.toList();
-                return Tasklistveiw(tasks: tasks, model:tasks[index] );
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return Tasklistveiw(tasks: value);
               },
             ),
           ],
@@ -104,47 +100,80 @@ class _HomescreenState extends State<Homescreen> {
   }
 }
 
-class Tasklistveiw extends StatelessWidget {
-  final TaskModel model;
-  const Tasklistveiw({super.key, required this.tasks, required this.model});
-
-  final List tasks;
+class Tasklistveiw extends StatefulWidget {
+  const Tasklistveiw({super.key, required this.tasks});
+  final Box tasks;
 
   @override
+  State<Tasklistveiw> createState() => _TasklistveiwState();
+}
+
+class _TasklistveiwState extends State<Tasklistveiw> {
+  @override
   Widget build(BuildContext context) {
-    
     return ListView.separated(
-      itemCount: tasks.length,
+      itemCount: widget.tasks.length,
       separatorBuilder: (BuildContext context, int index) {
         return Gap(20);
       },
       itemBuilder: (BuildContext context, int index) {
-        return SizedBox(
-          height: 150,
-          width: double.infinity,
-          child: Row(
+        final key = widget.tasks.keyAt(index);
+        TaskModel model = widget.tasks.get(key);
+        return Dismissible(
+          key: UniqueKey(),
+          background: Container(
+            color: Color(0xff4dae50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.check),
+                Text("Completed", style: TextStyle(color: TaColors().white)),
+              ],
+            ),
+          ),
+          secondaryBackground: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Tasktext(tasks[index]).medboldwhite(),
-                    Row(
-                      children: [
-                        Icon(Icons.watch_later_outlined),
-                        Tasktext("start").mednormalwhite(),
-                        Tasktext("end").mednormalwhite(),
-                      ],
-                    ),
-                    Tasktext("descrption").mednormalwhite(),
-                  ],
-                ),
-              ),
-              Container(width: .5, color: TaColors().white),
-              RotatedBox(
-                quarterTurns: 2,
-                child: Tasktext("to do").mednormalwhite(),
-              ),
+              Icon(Icons.delete),
+              Text("Deleted", style: TextStyle(color: TaColors().white)),
             ],
+          ),
+          onDismissed: (direction) {
+            // if( direction ==DismissDirection.startToEnd){
+            //   setState(() {
+            //     model.
+            //   });
+            // }
+            
+          }
+          ,
+          child: Container(
+            height: 150,
+            width: double.infinity,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Tasktext(model.title).medboldwhite(),
+                      Row(
+                        children: [
+                          Icon(Icons.watch_later_outlined),
+                          Tasktext(model.start.toString()).mednormalwhite(),
+                          Tasktext(model.end.toString()).mednormalwhite(),
+                        ],
+                      ),
+                      Tasktext(model.description).mednormalwhite(),
+                    ],
+                  ),
+                ),
+                Container(width: .5, color: TaColors().white),
+                RotatedBox(
+                  quarterTurns: 2,
+                  child: Tasktext("to do").mednormalwhite(),
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -1,6 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-
 part 'taskmodel.g.dart';
 
 @HiveType(typeId: 0)
@@ -15,6 +14,8 @@ class TaskModel extends HiveObject {
   final DateTime start;
   @HiveField(5)
   final DateTime end;
+  @HiveField(6)
+  final String id;
 
   TaskModel({
     required this.title,
@@ -22,5 +23,6 @@ class TaskModel extends HiveObject {
     required this.date,
     required this.start,
     required this.end,
+    required this.id, 
   });
 }
