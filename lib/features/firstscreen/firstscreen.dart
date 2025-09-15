@@ -5,7 +5,6 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taskaty/core/services/hive.dart';
 
-import 'package:taskaty/features/addtask/addtask.dart';
 import 'package:taskaty/features/addtask/widgets.dart';
 import 'package:taskaty/features/home/homescreen.dart';
 

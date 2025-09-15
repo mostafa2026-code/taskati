@@ -18,9 +18,11 @@ class _SplashState extends State<Splash> {
     super.initState();
     Future.delayed(Duration(seconds: 6), () {
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
           builder: (context) =>
+              // ignore: unrelated_type_equality_checks
               HiveDate().kisuploaded == true ? Homescreen() : Firstscreen(),
         ),
       );

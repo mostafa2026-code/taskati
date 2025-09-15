@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:taskaty/core/colors/colors.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:taskaty/core/services/hive.dart';
-import 'package:taskaty/features/addtask/taskmodel.dart';
+import 'package:taskaty/features/changephoto/chsnagephoto.dart';
 
 import 'package:taskaty/features/splash/splash.dart';
 
 void main() async {
   await Hive.initFlutter();
   await HiveDate.initialization();
-  Hive.registerAdapter(TaskTypeAdaptor());
+  
 
   runApp(const MainApp());
 }
@@ -20,7 +20,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Splash(),
+      home: Chsnagephoto(),
       theme: ThemeData(
         fontFamily: 'Poppins',
         inputDecorationTheme: InputDecorationTheme(

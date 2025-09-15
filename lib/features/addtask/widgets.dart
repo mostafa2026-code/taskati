@@ -9,6 +9,7 @@ class textform extends StatelessWidget {
   final TextEditingController? controllor;
   final bool? readonly;
   final Function()? ontap;
+  final String? Function(dynamic)? validator;
   const textform({
     super.key,
     required this.title,
@@ -16,7 +17,7 @@ class textform extends StatelessWidget {
     this.suffix,
     this.controllor,
     this.readonly,
-    this.ontap,
+    this.ontap, this.validator,
   });
 
   @override
@@ -25,7 +26,8 @@ class textform extends StatelessWidget {
       onTap: ontap,
       readOnly: readonly ?? false,
       controller: controllor,
-    
+      validator: validator,
+
       maxLines: maxline,
       decoration: InputDecoration(hintText: title, suffixIcon: suffix),
     );
@@ -57,7 +59,8 @@ class _HourState extends State<Hour> {
               initialTime: TimeOfDay.now(),
             );
             if (selectedtime != null) {
-              widget.controller.text =  selectedtime.format(context);
+              // ignore: use_build_context_synchronously
+              widget.controller.text = selectedtime.format(context);
             }
           },
           controllor: widget.controller,
@@ -83,14 +86,19 @@ class Mainbuttom extends StatelessWidget {
   final String title;
   final Function() ontap;
   final double? width;
-  const Mainbuttom({super.key, required this.title, required this.ontap, this.width});
+  const Mainbuttom({
+    super.key,
+    required this.title,
+    required this.ontap,
+    this.width,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: TaColors().blue,
-        minimumSize: Size(width?? double.infinity, 50),
+        minimumSize: Size(width ?? double.infinity, 50),
       ),
       onPressed: ontap,
       child: Tasktext(title).mednormalwhite(),
