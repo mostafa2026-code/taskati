@@ -9,6 +9,7 @@ import 'package:taskaty/features/addtask/addtask.dart';
 import 'package:taskaty/features/addtask/model/taskmodel.dart';
 import 'package:taskaty/features/addtask/widgets.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:taskaty/features/changephoto/chsnagephoto.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -40,13 +41,38 @@ class _HomescreenState extends State<Homescreen> {
                     Tasktext("have a nice day").mednormalblack(),
                   ],
                 ),
-                CircleAvatar(
-                  backgroundImage:
-                      // ignore: unnecessary_null_comparison
-                      HiveDate.getuserdate(HiveDate().kimage) != null
-                      ? FileImage(File(HiveDate.getuserdate(HiveDate().kimage)))
-                      : AssetImage("assets/images/user 1.png"),
-                  radius: 26,
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        HiveDate.changetheme();
+                      },
+                      icon: Icon(Icons.wb_sunny, color: Colors.amber),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Chsnagephoto(),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        backgroundImage:
+                            // ignore: unnecessary_null_comparison
+                            HiveDate.getuserdate(HiveDate().kimage) != null
+                            ? FileImage(
+                                File(HiveDate.getuserdate(HiveDate().kimage)),
+                              )
+                            : AssetImage("assets/images/user 1.png"),
+                        radius: 26,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -87,6 +113,24 @@ class _HomescreenState extends State<Homescreen> {
               width: 65,
               selectionColor: TaColors().blue,
               selectedTextColor: TaColors().white,
+              initialSelectedDate: DateTime.now(),
+              deactivatedColor: Colors.grey.shade400,
+
+              dayTextStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              dateTextStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              monthTextStyle: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               onDateChange: (selectedDate) {
                 setState(() {
                   date = DateFormat(

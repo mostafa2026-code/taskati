@@ -4,6 +4,10 @@ import 'package:taskaty/core/colors/colors.dart';
 class MyTheme {
   ThemeData lighttheme() {
     return ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: TaColors().blue,
+        onSurface: TaColors().black,
+      ),
       fontFamily: 'Poppins',
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: TextStyle(color: TaColors().grey),
@@ -29,15 +33,22 @@ class MyTheme {
 
   ThemeData darktheme() {
     return ThemeData(
+      appBarTheme: AppBarTheme(
+        backgroundColor: Color(0xff090809),
+        centerTitle: true,
+        actionsIconTheme: IconThemeData(color: TaColors().white),
+      ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: TaColors().blue,
+        onSurface: TaColors().white,
+      ),
       scaffoldBackgroundColor: Color(0xff090809),
       fontFamily: 'Poppins',
-      colorScheme: ColorScheme.dark(
-    primary:   Color(0xff2097f3),
-    onSurface: Color(0xff2097f3),
-  ),
       datePickerTheme: DatePickerThemeData(
-        backgroundColor: Color(0xff434243),
-        dayStyle: TextStyle(color: TaColors().white),
+        backgroundColor: Colors.grey.shade900, // الخلفية زي الصورة
+        headerBackgroundColor: Colors.grey.shade800,
+        headerForegroundColor: Colors.white,
+        weekdayStyle: TextStyle(color: Colors.white70),
       ),
       textSelectionTheme: TextSelectionThemeData(),
       timePickerTheme: TimePickerThemeData(
@@ -46,18 +57,14 @@ class MyTheme {
         hourMinuteColor: Colors.white,
         dialBackgroundColor: Color(0xff585859),
         dialHandColor: Color(0xff2097f3),
-        helpTextStyle: TextStyle(color: Color(0xff2097f3) , fontSize: 24),
+        helpTextStyle: TextStyle(color: Color(0xff2097f3), fontSize: 24),
         inputDecorationTheme: InputDecorationTheme(
           focusColor: Color(0xff2097f3),
           prefixIconColor: Color(0xff2097f3),
           suffixIconColor: Color(0xff2097f3),
-          
         ),
-        dayPeriodTextColor: Color(0xff2097f3) ,
-        hourMinuteTextColor:Color(0xff2097f3) ,
-        
-      
-        
+        dayPeriodTextColor: Color(0xff2097f3),
+        hourMinuteTextColor: Color(0xff2097f3),
 
         dialTextColor: Colors.white,
         hourMinuteTextStyle: TextStyle(color: Color(0xff2097f3)),
@@ -83,6 +90,28 @@ class MyTheme {
           borderSide: BorderSide(color: TaColors().red, width: 1),
         ),
       ),
+      dialogTheme: DialogThemeData(
+        
+    backgroundColor: const Color(0xFF1E1E1E),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    ),
+    titleTextStyle: const TextStyle(
+      color: Colors.white,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+    contentTextStyle: const TextStyle(
+      color: Colors.white70,
+      fontSize: 16,
+    ),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.blue[300], // لون الأزرار (OK / Cancel)
+    ),
+  ),
+    
     );
   }
 }

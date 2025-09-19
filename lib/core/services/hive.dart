@@ -8,6 +8,7 @@ class HiveDate {
   final String kName = "name";
   final String kimage = "image";
   final String kisuploaded = "isuploaded";
+  final String kisdark = "isdark";
 
   static initialization() async {
     Hive.registerAdapter<Taskmodel>(TaskmodelAdapter());
@@ -23,10 +24,11 @@ class HiveDate {
     return userbox.get(key);
   }
 
-  static putcompleteuserdata(String name, String image) {
+  static putcompleteuserdata(String name, String image, ) {
     adddatetouserbox(HiveDate().kName, name);
     adddatetouserbox(HiveDate().kimage, image);
     adddatetouserbox(HiveDate().kisuploaded, true);
+   
   }
 
   static setuserdata(String newName, String newImage) {
@@ -40,5 +42,10 @@ class HiveDate {
 
   static Taskmodel? gettaskdata(key) {
     return taskbox.get(key);
+  }
+
+  static changetheme() {
+    bool cashedtheme = HiveDate.userbox.get(HiveDate().kisdark) ?? false;
+    HiveDate.userbox.put(HiveDate().kisdark, !cashedtheme);
   }
 }

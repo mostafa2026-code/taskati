@@ -17,7 +17,8 @@ class textform extends StatelessWidget {
     this.suffix,
     this.controllor,
     this.readonly,
-    this.ontap, this.validator,
+    this.ontap,
+    this.validator,
   });
 
   @override
@@ -101,7 +102,7 @@ class Mainbuttom extends StatelessWidget {
         minimumSize: Size(width ?? double.infinity, 50),
       ),
       onPressed: ontap,
-      child: Tasktext(title).mednormalwhite(),
+      child: Text(title, style: TextStyle(color: TaColors().white)),
     );
   }
 }

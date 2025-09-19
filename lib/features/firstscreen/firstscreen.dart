@@ -29,6 +29,9 @@ class _FirstscreenState extends State<Firstscreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      appBar: AppBar(
+        actions: [],
+      ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -82,7 +85,7 @@ class _FirstscreenState extends State<Firstscreen> {
                 } else if (path.isEmpty && namecontrollor.text.isNotEmpty) {
                   snackbar("please put your image", context);
                 } else if (path.isNotEmpty && namecontrollor.text.isNotEmpty) {
-                  HiveDate.putcompleteuserdata(namecontrollor.text, path);
+                  HiveDate.putcompleteuserdata(namecontrollor.text, path );
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => Homescreen()),

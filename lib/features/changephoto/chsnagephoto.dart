@@ -35,7 +35,14 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
           },
           icon: Icon(Icons.arrow_back, color: TaColors().blue),
         ),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.sunny))],
+        actions: [
+          IconButton(
+            onPressed: () {
+              HiveDate.changetheme();
+            },
+            icon: Icon(Icons.sunny),
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(24),
@@ -95,7 +102,6 @@ class _ChsnagephotoState extends State<Chsnagephoto> {
                     ? FileImage(File(HiveDate.getuserdate(HiveDate().kimage)))
                     : AssetImage("assets/images/user 1.png"),
                 radius: 50,
-                child: Icon(Icons.camera_alt_outlined),
               ),
             ),
             Gap(40),

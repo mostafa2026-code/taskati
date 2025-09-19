@@ -4,8 +4,6 @@ import 'package:taskaty/core/services/hive.dart';
 import 'package:taskaty/core/utils/theme.dart';
 import "package:taskaty/features/splash/splash.dart";
 
-
-
 void main() async {
   await Hive.initFlutter();
   await HiveDate.initialization();
@@ -18,11 +16,17 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode:ThemeMode.light,
-      home: Splash(),
-      theme: MyTheme().lighttheme(),
-      darkTheme: MyTheme().darktheme(),
+    return ValueListenableBuilder(
+      valueListenable: HiveDate.userbox.listenable(),
+      builder: (context, value, child) {
+        bool isdark = value.get(HiveDate().kisdark) ?? false;
+        return MaterialApp(
+          themeMode: isdark ? ThemeMode.dark : ThemeMode.light,
+          home: Splash(),
+          theme: MyTheme().lighttheme(),
+          darkTheme: MyTheme().darktheme(),
+        );
+      },
     );
   }
 }

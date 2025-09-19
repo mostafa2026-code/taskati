@@ -12,9 +12,9 @@ class TaColors {
 class Tasktext {
   final String title;
 
-  Tasktext( this.title);
+  Tasktext(this.title);
 
-  Text headine(){
+  Text headine() {
     return Text(
       title,
       style: TextStyle(
@@ -28,46 +28,28 @@ class Tasktext {
   Text medboldwhite() {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: TaColors().white,
-      ),
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
 
   Text mednormalwhite() {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: TaColors().white,
-      ),
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
     );
   }
 
-
-  
   Text mednormalblack() {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: TaColors().black,
-      ),
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
     );
   }
-  
+
   Text medboldblack() {
     return Text(
       title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: TaColors().black,
-      ),
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
 }
