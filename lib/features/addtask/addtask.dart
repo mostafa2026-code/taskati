@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:taskaty/core/colors/colors.dart';
 import 'package:taskaty/core/services/hive.dart';
+import 'package:taskaty/features/addtask/model/taskmodel.dart';
 import 'package:taskaty/features/addtask/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:taskaty/features/home/datatask/taskmodel.dart';
-import 'package:taskaty/features/home/homescreen.dart';
+
+List<Color> colors = [
+  TaColors().red,
+  TaColors().blue,
+  TaColors().orange,
+  Colors.green,
+];
+int? currentindex;
 
 class Addtask extends StatefulWidget {
-  const Addtask({super.key});
+  final Taskmodel? model;
+  const Addtask({super.key, this.model});
 
   @override
   State<Addtask> createState() => _AddtaskState();
@@ -16,39 +24,62 @@ class Addtask extends StatefulWidget {
 
 class _AddtaskState extends State<Addtask> {
   late final String title;
-  TextEditingController titlecon = TextEditingController();
+  late TextEditingController titlecon;
 
   late final String description;
-  TextEditingController descriptioncon = TextEditingController();
+  late TextEditingController descriptioncon;
 
   late final String date;
-  TextEditingController datecon = TextEditingController(
-    text: DateFormat("yyyy-MM-dd").format(DateTime.now()),
-  );
+  late TextEditingController datecon;
 
   late final String start;
-  TextEditingController startcon = TextEditingController(
-    text: DateFormat("hh:mm a").format(DateTime.now()),
-  );
+  late TextEditingController startcon;
 
   late final String end;
-  TextEditingController endcon = TextEditingController(
-    text: DateFormat("hh:mm a").format(DateTime.now()),
-  );
+  late TextEditingController endcon;
+  @override
+  void initState() {
+    super.initState();
 
-  List<Color> colors = [
-    TaColors().red,
-    TaColors().blue,
-    TaColors().orange,
-    TaColors().grey,
-  ];
-  int? currentindex;
+    // لو جاي Edit هيحط قيم الـ model
+    titlecon = TextEditingController(text: widget.model?.title ?? "");
+    descriptioncon = TextEditingController(
+      text: widget.model?.description ?? "",
+    );
+    datecon = TextEditingController(
+      text:
+          widget.model?.date ?? DateFormat("yyyy-MM-dd").format(DateTime.now()),
+    );
+    startcon = TextEditingController(
+      text:
+          widget.model?.starttime ??
+          DateFormat("hh:mm a").format(DateTime.now()),
+    );
+    endcon = TextEditingController(
+      text:
+          widget.model?.endtime ?? DateFormat("hh:mm a").format(DateTime.now()),
+    );
+
+    // اللون الحالي
+    currentindex = widget.model?.colorindex ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     final myFormKey = GlobalKey<FormState>();
     return Scaffold(
-      appBar: AppBar(title: Tasktext("Addtask").headine(), centerTitle: true),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+        title: Tasktext(
+          widget.model == null ? "Add Task" : "Edit Task",
+        ).headine(),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -136,39 +167,51 @@ class _AddtaskState extends State<Addtask> {
                   }),
                 ),
                 const Gap(20),
-                Mainbuttom(
-                  title: "Add task",
-                  ontap: () async {
-                    if (myFormKey.currentState!.validate()) {
-                      String id =
-                          DateFormat("yyyy-MM-dd").format(DateTime.now()) +
-                          titlecon.text;
-                      await HiveDate.puttaskdata(
-                        id,
-                        TaskModel(
-                          title: titlecon.text,
-                          description: descriptioncon.text,
-                          date: DateTime.parse(datecon.text),
-                          start: DateTime.parse(datecon.text),
-                          end: DateTime.parse(startcon.text),
-                          id: id,
-                          
-                        
-                        ),
-                      );
-                      await Navigator.pushAndRemoveUntil(
-                        // ignore: use_build_context_synchronously
-                        context,
-                        MaterialPageRoute(builder: (context) => Homescreen()),
-                        (route) => false,
-                      );
-                    }
-                  },
-                ),
-                SafeArea(child: Gap(100)),
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(24),
+        child: Mainbuttom(
+          title: widget.model == null ? "Add Task" : "Save Changes",
+          ontap: () async {
+            if (myFormKey.currentState!.validate()) {
+              if (widget.model == null) {
+                String id =
+                    DateFormat("yyyy-MM-dd").format(DateTime.now()) +
+                    titlecon.text;
+                await HiveDate.puttaskdata(
+                  id,
+                  Taskmodel(
+                    title: titlecon.text,
+                    description: descriptioncon.text,
+                    date: datecon.text,
+                    starttime: startcon.text,
+                    endtime: endcon.text,
+                    id: id,
+                    colorindex: currentindex ?? 0,
+                  ),
+                );
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
+              } else {
+                final Taskmodel editedtask = widget.model!.copywith(
+                  title: titlecon.text,
+                  description: descriptioncon.text,
+                  date: datecon.text,
+                  starttime: startcon.text,
+                  endtime: endcon.text,
+                  id: widget.model!.id,
+                  isCompleted: widget.model!.isCompleted,
+                  colorindex: currentindex ?? widget.model!.colorindex,
+                );
+                HiveDate.taskbox.put(widget.model!.id, editedtask);
+                Navigator.pop(context);
+              }
+            }
+          },
         ),
       ),
     );

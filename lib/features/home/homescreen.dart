@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:taskaty/core/colors/colors.dart';
 import 'package:taskaty/core/services/hive.dart';
 import 'package:taskaty/features/addtask/addtask.dart';
+import 'package:taskaty/features/addtask/model/taskmodel.dart';
 import 'package:taskaty/features/addtask/widgets.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
-import 'package:taskaty/features/home/datatask/taskmodel.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -18,11 +18,12 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  String date = DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(24),
         child: Column(
           children: [
             Gap(10),
@@ -79,104 +80,181 @@ class _HomescreenState extends State<Homescreen> {
                 ),
               ],
             ),
+            Gap(20),
             DatePicker(
-              DateTime.now(),
+              DateTime.now().subtract(Duration(days: 3)),
               height: 100,
               width: 65,
               selectionColor: TaColors().blue,
               selectedTextColor: TaColors().white,
-              onDateChange: (selectedDate) {},
+              onDateChange: (selectedDate) {
+                setState(() {
+                  date = DateFormat(
+                    "yyyy-MM-dd",
+                  ).format(selectedDate).toString();
+                });
+              },
             ),
             ValueListenableBuilder(
               valueListenable: HiveDate.taskbox.listenable(),
-              builder: (BuildContext context, dynamic value, Widget? child) {
-                return Tasklistveiw(tasks: value);
+              builder: (BuildContext context, Box box, Widget? child) {
+                List<dynamic> tasks = box.values.toList();
+                List<Taskmodel> datetasks = [];
+                for (var task in tasks) {
+                  if (task.date == date) {
+                    datetasks.add(task);
+                  }
+                }
+
+                return Expanded(
+                  child: ListView.separated(
+                    itemCount: datetasks.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Gap(20);
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      Taskmodel model = datetasks[index];
+
+                      return Dismissible(
+                        key: UniqueKey(),
+                        background: Container(
+                          padding: EdgeInsets.all(24),
+                          color: Color(0xff4dae50),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(Icons.check),
+                              Text(
+                                "Completed",
+                                style: TextStyle(color: TaColors().white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        secondaryBackground: Container(
+                          padding: EdgeInsets.all(24),
+                          color: TaColors().red,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(Icons.delete),
+                              Text(
+                                "Deleted",
+                                style: TextStyle(color: TaColors().white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onDismissed: (direction) {
+                          if (direction == DismissDirection.startToEnd) {
+                            setState(() {
+                              final Taskmodel updated = model.copywith(
+                                isCompleted: true,
+                                colorindex: 3,
+                              );
+                              HiveDate.taskbox.put(model.id, updated);
+                            });
+                          } else {
+                            setState(() {
+                              HiveDate.taskbox.delete(model.id);
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(24),
+                          height: 160,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: model.isCompleted ?? false
+                                ? colors[3]
+                                : colors[model.colorindex],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  spacing: 5,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Tasktext(model.title).medboldwhite(),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.watch_later_outlined),
+                                        Tasktext(
+                                          model.starttime.toString(),
+                                        ).mednormalwhite(),
+                                        Text("=>"),
+                                        Tasktext(
+                                          model.endtime.toString(),
+                                        ).mednormalwhite(),
+                                      ],
+                                    ),
+                                    Tasktext(
+                                      model.description,
+                                    ).mednormalwhite(),
+                                  ],
+                                ),
+                              ),
+                              IconButton.filled(
+                                onPressed: () {
+                                  if (model.isCompleted == true) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog.adaptive(
+                                          title: Text(
+                                            "You can't edit this completed task",
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("Ok"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Addtask(model: model),
+                                      ),
+                                    );
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: TaColors().white,
+                                  size: 20,
+                                ),
+                              ),
+                              Container(width: .5, color: TaColors().white),
+                              RotatedBox(
+                                quarterTurns: 3,
+                                child: Tasktext(
+                                  model.isCompleted ?? false
+                                      ? "Completed"
+                                      : "To Do",
+                                ).mednormalwhite(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
               },
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class Tasklistveiw extends StatefulWidget {
-  const Tasklistveiw({super.key, required this.tasks});
-  final Box tasks;
-
-  @override
-  State<Tasklistveiw> createState() => _TasklistveiwState();
-}
-
-class _TasklistveiwState extends State<Tasklistveiw> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: widget.tasks.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return Gap(20);
-      },
-      itemBuilder: (BuildContext context, int index) {
-        final key = widget.tasks.keyAt(index);
-        TaskModel model = widget.tasks.get(key);
-        return Dismissible(
-          key: UniqueKey(),
-          background: Container(
-            color: Color(0xff4dae50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(Icons.check),
-                Text("Completed", style: TextStyle(color: TaColors().white)),
-              ],
-            ),
-          ),
-          secondaryBackground: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(Icons.delete),
-              Text("Deleted", style: TextStyle(color: TaColors().white)),
-            ],
-          ),
-          onDismissed: (direction) {
-            // if( direction ==DismissDirection.startToEnd){
-            //   setState(() {
-            //     model.
-            //   });
-            // }
-            
-          }
-          ,
-          child: Container(
-            height: 150,
-            width: double.infinity,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Tasktext(model.title).medboldwhite(),
-                      Row(
-                        children: [
-                          Icon(Icons.watch_later_outlined),
-                          Tasktext(model.start.toString()).mednormalwhite(),
-                          Tasktext(model.end.toString()).mednormalwhite(),
-                        ],
-                      ),
-                      Tasktext(model.description).mednormalwhite(),
-                    ],
-                  ),
-                ),
-                Container(width: .5, color: TaColors().white),
-                RotatedBox(
-                  quarterTurns: 2,
-                  child: Tasktext("to do").mednormalwhite(),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }
