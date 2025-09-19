@@ -21,6 +21,7 @@ class MainApp extends StatelessWidget {
       builder: (context, value, child) {
         bool isdark = value.get(HiveDate().kisdark) ?? false;
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           themeMode: isdark ? ThemeMode.dark : ThemeMode.light,
           home: Splash(),
           theme: MyTheme().lighttheme(),
